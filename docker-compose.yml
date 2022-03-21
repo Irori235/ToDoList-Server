@@ -11,12 +11,11 @@ services:
       DB_USERNAME: root
       DB_PASSWORD: password
       DB_HOSTNAME: mysql
-      DB_DBNAME: ToDoList
+      DB_PORT: 3306
+      DB_DBNAME: todolist
     tty: true
     volumes:
       - ./:/app/ToDoList
-    networks:
-      - default
     ports:
       - "8000:8000"
     depends_on:
@@ -28,10 +27,12 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: ToDoList
+      MYSQL_DATABASE: todolist
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
     volumes:
       - ./mysql/data:/var/lib/mysql
+    expose:
+      - "3306"
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -41,8 +42,6 @@ services:
       PMA_HOST: mysql
       PMA_USER: root
       PMA_PASSWORD: password
-    links:
-      - mysql
     ports:
       - "4040:80"
     volumes:
