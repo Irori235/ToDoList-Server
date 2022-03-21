@@ -2,7 +2,7 @@ package model
 
 import (
 	"github.com/google/uuid"
-	_ "github.com/jinzhu/gorm"
+	_ "gorm.io/gorm"
 )
 
 // Task型はuuid.UUID型のID、文字列のNameとbool値のFinishedをパラメーターとして持つ

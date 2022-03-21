@@ -1,46 +1,45 @@
 package model
 
 import (
+	"database/sql"
 	"fmt"
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	_ "gorm.io/driver/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 var db *gorm.DB
 
-func DBConnection() (*gorm.DB, error) {
-	_db, err := gorm.Open(GetDBConfig())
-	if err != nil {
-		return nil, err
-	}
-	db = _db
-	return db, err
-}
-
-func GetDBConfig() (string, string) {
-	user := os.Getenv("DB_USERNAME")
-	password := os.Getenv("DB_PASSWORD")
-	hostname := os.Getenv("DB_HOSTNAME")
-	dbname := os.Getenv("DB_DBNAME")
-
-	connect := user + ":" + password + "@" + "tcp(" + hostname + ":3306)" + "/" + dbname + "?charset=utf8mb4&parseTime=True&loc=Local"
-	fmt.Println(connect)
-	return "mysql", connect
-}
-
-func CreateDB() *gorm.DB {
-	db, err := DBConnection()
+// DB接続とテーブルを作成する
+func DBConnection() *sql.DB {
+	dsn := GetDBConfig()
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(fmt.Errorf("DB Error: %w", err))
 	}
 	CreateTable(db)
-	return db
+	sqlDB, err := db.DB()
+	if err != nil {
+		panic(fmt.Errorf("DB Error: %w", err))
+	}
+	return sqlDB
 }
 
+// DBのdsnを取得する
+func GetDBConfig() string {
+	user := os.Getenv("DB_USERNAME")
+	password := os.Getenv("DB_PASSWORD")
+	hostname := os.Getenv("DB_HOSTNAME")
+	port := os.Getenv("DB_PORT")
+	dbname := os.Getenv("DB_DBNAME")
+
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, hostname, port, dbname) + "?charset=utf8mb4&parseTime=True&loc=Local"
+	return dsn
+}
+
+// Task型のテーブルを作成する
 func CreateTable(db *gorm.DB) {
 	db.AutoMigrate(&Task{})
 }
