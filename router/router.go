@@ -10,7 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-//Routingを設定する関数　引数はecho.echo型であり、戻り値はerror型
+//Routingを設定する関数 引数はecho.echo型であり、戻り値はerror型
 func SetRouter(e *echo.Echo) error {
 
 	// 諸々の設定(*1)

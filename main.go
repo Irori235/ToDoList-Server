@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	db := model.CreateDB()
-	defer db.Close()
+	sqlDB := model.DBConnection()
+	defer sqlDB.Close()
 	e := echo.New()
 	router.SetRouter(e)
 }
