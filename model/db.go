@@ -15,7 +15,8 @@ var db *gorm.DB
 // DB接続とテーブルを作成する
 func DBConnection() *sql.DB {
 	dsn := GetDBConfig()
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	var err error
+	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(fmt.Errorf("DB Error: %w", err))
 	}
